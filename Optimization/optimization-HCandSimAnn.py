@@ -423,6 +423,23 @@ class ChargingStationVisualizerApp:
 
     def _build_gui(self):
         """Constructs the Tkinter layout: Controls on top/sides and Plot in center."""
+        # Configure ttk styling so colored buttons display properly across OSes (especially macOS Aqua)
+        self.style = ttk.Style()
+        if "clam" in self.style.theme_names():
+            self.style.theme_use("clam")
+
+        self.style.configure("Reset.TButton", background="#4A4A4A", foreground="#FFFFFF", font=("Segoe UI", 9, "bold"), borderwidth=1, padding=(8, 4))
+        self.style.map("Reset.TButton", background=[("active", "#606060")], foreground=[("active", "#FFFFFF")])
+
+        self.style.configure("Step.TButton", background="#007ACC", foreground="#FFFFFF", font=("Segoe UI", 9, "bold"), borderwidth=1, padding=(12, 4))
+        self.style.map("Step.TButton", background=[("active", "#005999")], foreground=[("active", "#FFFFFF")])
+
+        self.style.configure("Run.TButton", background="#28A745", foreground="#FFFFFF", font=("Segoe UI", 9, "bold"), borderwidth=1, padding=(12, 4))
+        self.style.map("Run.TButton", background=[("active", "#218838")], foreground=[("active", "#FFFFFF")])
+
+        self.style.configure("Pause.TButton", background="#DC3545", foreground="#FFFFFF", font=("Segoe UI", 9, "bold"), borderwidth=1, padding=(12, 4))
+        self.style.map("Pause.TButton", background=[("active", "#C82333")], foreground=[("active", "#FFFFFF")])
+
         # Top control frame
         controls_frame = tk.Frame(self.root, bg="#2D2D2D", padx=10, pady=8)
         controls_frame.pack(side=tk.TOP, fill=tk.X)
@@ -445,41 +462,28 @@ class ChargingStationVisualizerApp:
         self.algo_dropdown.bind("<<ComboboxSelected>>", lambda e: self._on_algorithm_change())
 
         # Reset button (preserves houses, randomizes charging stations)
-        self.btn_reset = tk.Button(
+        self.btn_reset = ttk.Button(
             r1,
             text="Reset Stations",
             command=self.reset_stations,
-            bg="#555555",
-            fg="#FFFFFF",
-            font=("Segoe UI", 9, "bold"),
-            padx=8,
-            pady=2,
-            relief=tk.RAISED
+            style="Reset.TButton"
         )
         self.btn_reset.pack(side=tk.LEFT, padx=15)
 
         # Step and Run buttons
-        self.btn_step = tk.Button(
+        self.btn_step = ttk.Button(
             r1,
             text="Step",
             command=self.step_algorithm,
-            bg="#007ACC",
-            fg="#FFFFFF",
-            font=("Segoe UI", 9, "bold"),
-            padx=12,
-            pady=2
+            style="Step.TButton"
         )
         self.btn_step.pack(side=tk.LEFT, padx=5)
 
-        self.btn_run = tk.Button(
+        self.btn_run = ttk.Button(
             r1,
             text="Run",
             command=self.toggle_run,
-            bg="#28A745",
-            fg="#FFFFFF",
-            font=("Segoe UI", 9, "bold"),
-            padx=12,
-            pady=2
+            style="Run.TButton"
         )
         self.btn_run.pack(side=tk.LEFT, padx=5)
 
@@ -744,13 +748,13 @@ class ChargingStationVisualizerApp:
     def start_run(self):
         """Starts animated continuous run."""
         self.is_running = True
-        self.btn_run.config(text="Pause", bg="#DC3545")
+        self.btn_run.config(text="Pause", style="Pause.TButton")
         self._run_loop()
 
     def stop_run(self):
         """Pauses animated run."""
         self.is_running = False
-        self.btn_run.config(text="Run", bg="#28A745")
+        self.btn_run.config(text="Run", style="Run.TButton")
 
     def _run_loop(self):
         """Recursive loop using root.after for smooth animation without freezing."""
@@ -793,8 +797,7 @@ class ChargingStationVisualizerApp:
                 fontsize=HOUSE_FONTSIZE,
                 ha='center',
                 va='center',
-                fontname=SYMBOL_FONT,
-                fontweight='bold'
+                fontname=SYMBOL_FONT
             )
 
         # Render 3 Charging Stations (Bright Gold/Yellow unicode symbol)
@@ -806,8 +809,7 @@ class ChargingStationVisualizerApp:
                 fontsize=STATION_FONTSIZE,
                 ha='center',
                 va='center',
-                fontname=SYMBOL_FONT,
-                fontweight='bold'
+                fontname=SYMBOL_FONT
             )
 
         # Update GUI status label with current and best-ever cost
