@@ -26,6 +26,12 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+import matplotlib.font_manager as fm
+
+# Detect available font for Unicode symbols across OSes
+_AVAILABLE_FONTS = set(f.name for f in fm.fontManager.ttflist)
+_PREFERRED_FONTS = ['Segoe UI Symbol', 'Apple Symbols', 'Arial Unicode MS', 'DejaVu Sans', 'sans-serif']
+SYMBOL_FONT = next((f for f in _PREFERRED_FONTS if f in _AVAILABLE_FONTS), 'sans-serif')
 
 
 # =====================================================================
@@ -787,7 +793,7 @@ class ChargingStationVisualizerApp:
                 fontsize=HOUSE_FONTSIZE,
                 ha='center',
                 va='center',
-                fontname='Segoe UI Symbol',
+                fontname=SYMBOL_FONT,
                 fontweight='bold'
             )
 
@@ -800,7 +806,7 @@ class ChargingStationVisualizerApp:
                 fontsize=STATION_FONTSIZE,
                 ha='center',
                 va='center',
-                fontname='Segoe UI Symbol',
+                fontname=SYMBOL_FONT,
                 fontweight='bold'
             )
 
