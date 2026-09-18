@@ -10,7 +10,7 @@ Target Learning Objectives:
   5. Nelder-Mead (Downhill Simplex) on Continuous Functions
 
 Tools & Libraries:
-  - Hyperactive (Install via: pip install hyperactive)
+  - Hyperactive (Install via: pip install hyperactive==2.2.0)
   - SciPy       (Install via: pip install scipy)
   - NumPy       (Install via: pip install numpy)
 
