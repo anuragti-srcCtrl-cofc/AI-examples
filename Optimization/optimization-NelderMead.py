@@ -482,6 +482,23 @@ class NelderMeadApp:
 
     def _build_gui(self):
         """Constructs layout: top controls, center Matplotlib canvas, right explanation panel."""
+        # Configure ttk styling so colored buttons display properly across OSes (especially macOS Aqua)
+        self.style = ttk.Style()
+        if "clam" in self.style.theme_names():
+            self.style.theme_use("clam")
+
+        self.style.configure("NMStep.TButton", background="#0288D1", foreground="#FFFFFF", font=("Segoe UI", 9, "bold"), borderwidth=1, padding=(12, 4))
+        self.style.map("NMStep.TButton", background=[("active", "#03A9F4")], foreground=[("active", "#FFFFFF")])
+
+        self.style.configure("NMRun.TButton", background="#2E7D32", foreground="#FFFFFF", font=("Segoe UI", 9, "bold"), borderwidth=1, padding=(14, 4))
+        self.style.map("NMRun.TButton", background=[("active", "#388E3C")], foreground=[("active", "#FFFFFF")])
+
+        self.style.configure("NMPause.TButton", background="#E65100", foreground="#FFFFFF", font=("Segoe UI", 9, "bold"), borderwidth=1, padding=(14, 4))
+        self.style.map("NMPause.TButton", background=[("active", "#F57C00")], foreground=[("active", "#FFFFFF")])
+
+        self.style.configure("NMReset.TButton", background="#4A4A4A", foreground="#FFFFFF", font=("Segoe UI", 9, "bold"), borderwidth=1, padding=(12, 4))
+        self.style.map("NMReset.TButton", background=[("active", "#606060")], foreground=[("active", "#FFFFFF")])
+
         # 1. Top Control Bar
         top_bar = tk.Frame(self.root, bg=BG_HEADER, padx=12, pady=8, relief=tk.RAISED, bd=1)
         top_bar.pack(side=tk.TOP, fill=tk.X)
@@ -515,53 +532,29 @@ class NelderMeadApp:
         ttk.Separator(top_bar, orient=tk.VERTICAL).pack(side=tk.LEFT, fill=tk.Y, padx=10)
 
         # Step Button
-        self.btn_step = tk.Button(
+        self.btn_step = ttk.Button(
             top_bar,
             text="▶ Step (1 Step)",
             command=self.step_forward,
-            bg="#0288D1",
-            fg="#FFFFFF",
-            activebackground="#03A9F4",
-            activeforeground="#FFFFFF",
-            font=("Segoe UI", 9, "bold"),
-            padx=12,
-            pady=4,
-            relief=tk.FLAT,
-            cursor="hand2"
+            style="NMStep.TButton"
         )
         self.btn_step.pack(side=tk.LEFT, padx=4)
 
         # Run / Pause Button
-        self.btn_run = tk.Button(
+        self.btn_run = ttk.Button(
             top_bar,
             text="▶ Run Full Simulation",
             command=self.toggle_run,
-            bg="#2E7D32",
-            fg="#FFFFFF",
-            activebackground="#388E3C",
-            activeforeground="#FFFFFF",
-            font=("Segoe UI", 9, "bold"),
-            padx=14,
-            pady=4,
-            relief=tk.FLAT,
-            cursor="hand2"
+            style="NMRun.TButton"
         )
         self.btn_run.pack(side=tk.LEFT, padx=4)
 
         # Reset Button
-        self.btn_reset = tk.Button(
+        self.btn_reset = ttk.Button(
             top_bar,
             text="⟲ Reset",
             command=self.reset_simulation,
-            bg="#555555",
-            fg="#FFFFFF",
-            activebackground="#666666",
-            activeforeground="#FFFFFF",
-            font=("Segoe UI", 9, "bold"),
-            padx=12,
-            pady=4,
-            relief=tk.FLAT,
-            cursor="hand2"
+            style="NMReset.TButton"
         )
         self.btn_reset.pack(side=tk.LEFT, padx=4)
 
@@ -1168,13 +1161,13 @@ class NelderMeadApp:
             if self.auto_run_job is not None:
                 self.root.after_cancel(self.auto_run_job)
                 self.auto_run_job = None
-            self.btn_run.config(text="▶ Resume Simulation", bg="#2E7D32")
+            self.btn_run.config(text="▶ Resume Simulation", style="NMRun.TButton")
         else:
             # Start
             if self.optimizer.is_converged:
                 self.reset_simulation()
             self.is_running = True
-            self.btn_run.config(text="⏸ Pause", bg="#E65100")
+            self.btn_run.config(text="⏸ Pause", style="NMPause.TButton")
             self._auto_step()
 
     def _auto_step(self):
@@ -1187,7 +1180,7 @@ class NelderMeadApp:
             self.auto_run_job = self.root.after(self.step_delay_ms, self._auto_step)
         else:
             self.is_running = False
-            self.btn_run.config(text="▶ Run Full Simulation", bg="#2E7D32")
+            self.btn_run.config(text="▶ Run Full Simulation", style="NMRun.TButton")
 
     def reset_simulation(self):
         """Restores simplex to currently selected corner and clears history."""
